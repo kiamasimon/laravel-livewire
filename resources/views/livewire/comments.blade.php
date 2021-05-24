@@ -27,6 +27,23 @@
                         </button>
                     </div>
                 @enderror
+
+                <section>
+                    @if($image)
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <img src="{{ $image }}" width="200"/>
+                            </div>
+                        </div>
+                    @endif
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <input type="file" id="image" wire:change="$emit('fileChoosen')">
+                        </div>
+                    </div>
+                </section>
+                <br>
+
                 <form wire:submit.prevent="addComment">
                     <div class="row">
                         <div class="col-sm-9">
@@ -56,6 +73,10 @@
                                 </div>
 
                                 <p class="text-gray-800">{{ $comment->body }}</p>
+
+                                @if($comment->image)
+                                    <img width="100" src="{{ $comment->imagePath }}">
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -67,3 +88,18 @@
         </div>
     </div>
 </div>
+
+<script>
+    Livewire.on('fileChoosen', () => {
+        let inputField = document.getElementById('image');
+        let file = inputField.files[0];
+
+        let reader = new FileReader();
+        reader.onloadend = () =>{
+            window.livewire.emit('fileUpload', reader.result)
+        }
+
+        reader.readAsDataURL(file);
+    })
+</script>
+
